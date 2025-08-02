@@ -1,5 +1,4 @@
 import json
-from logging import exception
 from pathlib import Path
 from fastapi import HTTPException
 
@@ -13,12 +12,12 @@ def read_students():
         return {}
     except json.JSONDecodeError:
         raise HTTPException(status_code=500, detail="Corrupted students.json file")
-    except exception as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f'Failed to read students data: {str(e)}')
 
 def write_students(students):
     try:
         with open(DATA_FILE, 'w') as f:
             json.dump(students, f, indent=2)
-    except exception as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f'Failed to write students data: {str(e)}')
