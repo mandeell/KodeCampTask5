@@ -11,7 +11,7 @@ class Student(BaseModel):
     def name_must_not_be_empty(cls, value):
         if not value.strip():
             raise ValueError("Student name cannot be empty")
-        return value
+        return value.strip().title()
 
     @field_validator('subject_scores')
     @classmethod
