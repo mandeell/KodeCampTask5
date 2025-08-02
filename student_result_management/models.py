@@ -1,20 +1,20 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator, computed_field
 from typing import Dict
 from statistics import mean
 
 class Student(BaseModel):
     name: str
-    subject_score: Dict[str, float]
-    average: float = None
-    grade: str = None
+    subject_scores: Dict[str, float]
 
-    @validator('name')
+    @field_validator('name')
+    @classmethod
     def name_must_not_be_empty(cls, value):
         if not value.strip():
             raise ValueError("Student name cannot be empty")
         return value
 
-    @validator('subject_score')
+    @field_validator('subject_scores')
+    @classmethod
     def validate_scores(cls, scores):
         if not scores:
             raise ValueError("At least one subject score is required")
@@ -23,24 +23,22 @@ class Student(BaseModel):
                 raise ValueError(f"Score for subject {subject} must be between 0 and 100")
         return scores
 
-    @validator('average', pre=True, always=True)
-    def calculate_average(cls, v, values):
-        if 'subject_scores' in values:
-            return mean(values['subject_scores'].values())
-        return v
+    @computed_field
+    @property
+    def average(self) -> float:
+        return round(mean(self.subject_scores.values()), 2)
 
-    @validator('grade', pre=True, always=True)
-    def calculate_grade(cls, v, values):
-        if 'average' in values and values['average'] is not None:
-            avg = values['average']
-            if avg >= 90:
-                return "A"
-            elif avg >= 80:
-                return "B"
-            elif avg >= 70:
-                return "C"
-            elif avg >= 60:
-                return "D"
-            else:
-                return "F"
-        return v
+    @computed_field
+    @property
+    def grade(self) -> str:
+        avg = self.average
+        if avg >= 90:
+            return "A"
+        elif avg >= 80:
+            return "B"
+        elif avg >= 70:
+            return "C"
+        elif avg >= 60:
+            return "D"
+        else:
+            return "F"
