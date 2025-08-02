@@ -1,0 +1,27 @@
+{
+  "1": {
+    "id": 1,
+    "name": "Laptop",
+    "price": 999.99
+  },
+  "2": {
+    "id": 2,
+    "name": "Mouse",
+    "price": 25.5
+  },
+  "3": {
+    "id": 3,
+    "name": "Keyboard",
+    "price": 75.0
+  },
+  "4": {
+    "id": 4,
+    "name": "Monitor",
+    "price": 299.99
+  },
+  "5": {
+    "id": 5,
+    "name": "Headphones",
+    "price": 149.99
+  }
+}
