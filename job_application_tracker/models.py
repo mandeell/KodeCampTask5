@@ -7,18 +7,28 @@ class Status(str, Enum):
     PENDING = "pending"
     ACCEPTED = "accepted"
     REJECTED = "rejected"
+    INTERVIEW = "interview"
+    WITHDRAWN = "withdrawn"
 
 class JobApplicationCreate(BaseModel):
     name: str
     company: str
     position: str
-    status: Status
+    status: Status = Status.PENDING
 
     @field_validator('name', 'company', 'position')
+    @classmethod
     def must_not_be_empty(cls, value):
-        if not value.strip():
+        if not value or not value.strip():
             raise ValueError("Field cannot be empty")
-        return value
+        return value.strip().title()
 
 class JobApplication(JobApplicationCreate):
     id: str  # Generated as name_company_position
+
+    @field_validator('id')
+    @classmethod
+    def id_must_not_be_empty(cls, value):
+        if not value or not value.strip():
+            raise ValueError("ID cannot be empty")
+        return value
